@@ -1,4 +1,4 @@
-import { squareIndexArray, squareVertexArray } from "./src/geometry.ts";
+import { triangleVertexArray } from "./src/geometry.ts";
 import { getPipeline } from "./src/getPipeline.ts";
 import { initialize } from "./src/initialize.ts";
 import { render } from "./src/render.ts";
@@ -15,28 +15,13 @@ initialize()
      * このバッファは vertex shader の @location(0) に対応している。
      */
     const vbo = GPU_DEVICE.createBuffer({
-      label: "verticesBuffer",
-      size: squareVertexArray.byteLength,
+      label: "triangleVertexBuffer",
+      size: triangleVertexArray.byteLength,
       usage: GPUBufferUsage.VERTEX,
       mappedAtCreation: true,
     });
-    new Float32Array(vbo.getMappedRange()).set(squareVertexArray);
+    new Float32Array(vbo.getMappedRange()).set(triangleVertexArray);
     vbo.unmap();
-
-    /**
-     * IndicesBuffer(IBO:インデックスバッファ）
-     * 三角形を構成する頂点の順番を指定するためのバッファ。
-     * 頂点を使い回して四角形を2枚の三角形で描画する場合などに使用する。
-     * 例: [0, 1, 2, 0, 2, 3] → 三角形①(0,1,2) + 三角形②(0,2,3)
-     */
-    const indicesBuffer = GPU_DEVICE.createBuffer({
-      label: "indicesBuffer",
-      size: squareIndexArray.byteLength,
-      usage: GPUBufferUsage.INDEX,
-      mappedAtCreation: true,
-    });
-    new Uint16Array(indicesBuffer.getMappedRange()).set(squareIndexArray);
-    indicesBuffer.unmap();
 
     /**
      * Uniform バインドグループレイアウト
@@ -101,7 +86,6 @@ initialize()
         verticesBuffer: vbo,
         uniformBuffer,
         uniformBindGroup,
-        indicesBuffer,
       });
       requestAnimationFrame(loop);
     };

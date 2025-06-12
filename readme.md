@@ -9,3 +9,4 @@
 - https://developer.mozilla.org/ja/docs/Web/API/WebGPU_API
 - https://zenn.dev/emadurandal/books/cb6818fd3a1b2e
 - WebGL スクール 第 11 期 第 5 回 スライド・講義動画
+# webgpu-triangle

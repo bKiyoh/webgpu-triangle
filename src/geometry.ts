@@ -1,26 +1,21 @@
 /** 1つの値のメモリサイズ */
 const perByteSize = Float32Array.BYTES_PER_ELEMENT; // 4
 
-/** squareVertexArray内の各頂点ごとのスキップサイズ */
-export const squareVertexSize = perByteSize * 2;
+/** triangleVertexArray内の各頂点ごとのスキップサイズ */
+export const triangleVertexSize = perByteSize * 2;
 
-/** squareVertexArray内の各頂点データのオフセットの位置 */
-export const squarePositionOffset = 0;
-
-/**
- * 座標データ
- */
-// prettier-ignore
-export const squareVertexArray = new Float32Array([
-    // position[x, y]
-    -1,  1,
-    -1, -1,
-     1, -1,
-     1,  1,
-  ]);
+/** triangleVertexArray内の各頂点データのオフセットの位置 */
+export const trianglePositionOffset = 0;
 
 /**
- * 頂点インデックス用のデータ
- * 4つの頂点のインデックス順を指定
+ * 三角形の頂点座標データ
+ * clip space（[-1, 1]）で上・左下・右下の三点を指定
  */
-export const squareIndexArray = new Uint16Array([0, 1, 2, 0, 2, 3]);
+export const triangleVertexArray = new Float32Array([
+  0.0,
+  0.5, // 上
+  -0.5,
+  -0.5, // 左下
+  0.5,
+  -0.5, // 右下
+]);

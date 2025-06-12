@@ -1,6 +1,6 @@
 import vertexWGSL from "./shader/vertex.wgsl?raw";
 import fragmentWGSL from "./shader/fragment.wgsl?raw";
-import { squarePositionOffset, squareVertexSize } from "./geometry";
+import { trianglePositionOffset, triangleVertexSize } from "./geometry";
 
 type TGetPipelineArgs = {
   GPU_DEVICE: GPUDevice;
@@ -34,12 +34,12 @@ export const getPipeline = ({
       entryPoint: "vertexMain",
       buffers: [
         {
-          arrayStride: squareVertexSize,
+          arrayStride: triangleVertexSize,
           attributes: [
             {
               // position
               shaderLocation: 0, // vertex.wgsl vertexMain関数の @location(0) に対応
-              offset: squarePositionOffset,
+              offset: trianglePositionOffset,
               format: "float32x2", // 各頂点の座標データの容量に合わせたフォーマット。ここでは4byteが２つで一つの座標なので'float32x2'を指定。
             },
           ],

@@ -1,4 +1,3 @@
-import { squareIndexArray } from "./geometry";
 import { writeUniformBuffer } from "./writeUniformBuffer";
 
 type TRenderArgs = {
@@ -8,7 +7,6 @@ type TRenderArgs = {
   verticesBuffer: GPUBuffer;
   uniformBuffer: GPUBuffer;
   uniformBindGroup: GPUBindGroup;
-  indicesBuffer: GPUBuffer;
 };
 
 export const render = ({
@@ -18,7 +16,6 @@ export const render = ({
   verticesBuffer,
   uniformBuffer,
   uniformBindGroup,
-  indicesBuffer,
 }: TRenderArgs) => {
   /** Update uniform buffer */
   // GPU側にデータを送る処理を実行
@@ -36,7 +33,7 @@ export const render = ({
       // fragment.wgsl　fragmentMain関数の戻り値の @location(0) に対応
       {
         view: GPU_CANVAS_CONTEXT.getCurrentTexture().createView(),
-        clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
+        clearValue: { r: 0.0, g: 0.15, b: 0.25, a: 1.0 },
         loadOp: "clear",
         storeOp: "store",
       },
@@ -50,14 +47,9 @@ export const render = ({
   // renderPassEncoderのsetVertexBuffer()メソッドを使って、VertexBufferをセット
   // 第一引数の数値には、RenderPipelineのvertex.buffersにおけるbufferのインデックスを指定
   renderPassEncoder.setVertexBuffer(0, verticesBuffer);
-  // IBO（インデックスバッファ）をバインド
-  // renderPassEncoder.setIndexBuffer(buffer, indexFormat)
-  // - buffer: GPUBuffer（インデックス番号を格納したバッファ）
-  // - indexFormat: "uint16" または "uint32"（インデックスのデータ型）
-  renderPassEncoder.setIndexBuffer(indicesBuffer, "uint16");
-  // draw関数を呼びます。実質的な描画を指示する関数
-  renderPassEncoder.drawIndexed(squareIndexArray.length);
-  // end関数を呼び、コマンドシーケンスの記録の終了を指示
+
+  renderPassEncoder.draw(3); // 3頂点の三角形
+
   renderPassEncoder.end();
 
   /**
