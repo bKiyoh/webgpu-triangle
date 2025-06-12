@@ -5,6 +5,7 @@ type TRenderArgs = {
   GPU_DEVICE: GPUDevice;
   pipeline: GPURenderPipeline;
   verticesBuffer: GPUBuffer;
+  indicesBuffer: GPUBuffer;
   uniformBuffer: GPUBuffer;
   uniformBindGroup: GPUBindGroup;
 };
@@ -14,6 +15,7 @@ export const render = ({
   GPU_DEVICE,
   pipeline,
   verticesBuffer,
+  indicesBuffer,
   uniformBuffer,
   uniformBindGroup,
 }: TRenderArgs) => {
@@ -48,7 +50,9 @@ export const render = ({
   // 第一引数の数値には、RenderPipelineのvertex.buffersにおけるbufferのインデックスを指定
   renderPassEncoder.setVertexBuffer(0, verticesBuffer);
 
-  renderPassEncoder.draw(3); // 3頂点の三角形
+  renderPassEncoder.setIndexBuffer(indicesBuffer, "uint16");
+
+  renderPassEncoder.drawIndexed(9); // 3 × 2三角形
 
   renderPassEncoder.end();
 

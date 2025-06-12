@@ -1,4 +1,4 @@
-import { triangleVertexArray } from "./src/geometry.ts";
+import { sharedVertexArray, sharedIndexArray } from "./src/geometry";
 import { getPipeline } from "./src/getPipeline.ts";
 import { initialize } from "./src/initialize.ts";
 import { render } from "./src/render.ts";
@@ -8,20 +8,30 @@ initialize()
   .then((result) => {
     const { GPU_DEVICE, GPU_CANVAS_CONTEXT, CANVAS_FORMAT } = result;
 
-    /**
-     * VertexBuffer(VBO:頂点バッファ）
-     * 四角形を構成するための頂点データを GPU に渡すバッファ。
-     * 今回は 2D 座標（x, y）のみを使用し、float32x2（8バイト）× 4頂点分の構成。
-     * このバッファは vertex shader の @location(0) に対応している。
-     */
+    // 頂点バッファ（VBO）の作成
+    // WebGPUではcreateBuffer時にmappedAtCreation: true を使う場合、sizeは4の倍数である必要がある。
+    // Float32Array（4バイト単位）でも、要素数が奇数だとbyteLengthが4の倍数にならないことがあるため、ここで4の倍数に丸める。
+    const paddedSize = Math.ceil(sharedVertexArray.byteLength / 4) * 4;
     const vbo = GPU_DEVICE.createBuffer({
       label: "triangleVertexBuffer",
-      size: triangleVertexArray.byteLength,
+      size: paddedSize,
       usage: GPUBufferUsage.VERTEX,
       mappedAtCreation: true,
     });
-    new Float32Array(vbo.getMappedRange()).set(triangleVertexArray);
+    new Float32Array(vbo.getMappedRange()).set(sharedVertexArray);
     vbo.unmap();
+
+    // インデックスバッファ（IBO）の作成
+    // Uint16Arrayは1要素あたり2バイトのため、9要素などの場合 byteLength = 18 となり、これも4の倍数でないとエラーになる。
+    // 同様にbyteLengthを4の倍数に丸める必要がある。
+    const paddedIndexSize = Math.ceil(sharedIndexArray.byteLength / 4) * 4;
+    const ibo = GPU_DEVICE.createBuffer({
+      size: paddedIndexSize,
+      usage: GPUBufferUsage.INDEX,
+      mappedAtCreation: true,
+    });
+    new Uint16Array(ibo.getMappedRange()).set(sharedIndexArray);
+    ibo.unmap();
 
     /**
      * Uniform バインドグループレイアウト
@@ -84,6 +94,7 @@ initialize()
         GPU_DEVICE,
         pipeline,
         verticesBuffer: vbo,
+        indicesBuffer: ibo,
         uniformBuffer,
         uniformBindGroup,
       });
@@ -92,5 +103,7 @@ initialize()
     loop();
   })
   .catch((error) => {
+    console.log(sharedVertexArray.byteLength); // 要素数（例: 18）
+    console.log(sharedIndexArray.byteLength);
     console.error(error);
   });
