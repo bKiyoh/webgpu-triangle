@@ -1,4 +1,5 @@
 import { writeUniformBuffer } from "./writeUniformBuffer";
+import { triangleCount } from "./uniform.ts";
 
 type TRenderArgs = {
   GPU_CANVAS_CONTEXT: GPUCanvasContext;
@@ -43,17 +44,22 @@ export const render = ({
   });
   // setPipeline関数で、前ページで作成したRenderPipelineを設定
   renderPassEncoder.setPipeline(pipeline);
+
   // fragment.wgsl に値を渡すために @group(0) に指定
   renderPassEncoder.setBindGroup(0, uniformBindGroup);
+
   // VBO（頂点バッファ）をスロット0にバインド
   // renderPassEncoderのsetVertexBuffer()メソッドを使って、VertexBufferをセット
   // 第一引数の数値には、RenderPipelineのvertex.buffersにおけるbufferのインデックスを指定
   renderPassEncoder.setVertexBuffer(0, verticesBuffer);
 
+  // IBO（インデックスバッファ）をバインド
   renderPassEncoder.setIndexBuffer(indicesBuffer, "uint16");
 
-  renderPassEncoder.drawIndexed(9); // 3 × 2三角形
+  // GPU に「合計 N 個の頂点インデックスを使って描画せよ」と命令している処理
+  renderPassEncoder.drawIndexed(triangleCount * 3);
 
+  // レンダリングパスの終了を宣言
   renderPassEncoder.end();
 
   /**

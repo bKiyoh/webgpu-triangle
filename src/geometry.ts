@@ -10,30 +10,34 @@ export const sharedPositionOffset = 0;
  * - 左の三角形: 0,1,2
  * - 右の三角形: 0,2,3
  */
+// 正三角形の高さ = 辺の長さ × √3 / 2
+const sideLength = 0.3;
+const height = (sideLength * Math.sqrt(3)) / 2; // ≒ 0.2598
+
 export const sharedVertexArray = new Float32Array([
   // 三角形①（上）
   0.0,
-  0.7, // 上
-  -0.15,
-  0.4, // 左下
-  0.15,
-  0.4, // 右下
+  height * 2 + 0.2, // 上頂点
+  -sideLength / 2,
+  height * 1 + 0.2, // 左下
+  sideLength / 2,
+  height * 1 + 0.2, // 右下
 
   // 三角形②（中央）
   0.0,
-  0.2,
-  -0.15,
-  -0.1,
-  0.15,
-  -0.1,
+  height * 1, // 上頂点
+  -sideLength / 2,
+  height * 0, // 左下
+  sideLength / 2,
+  height * 0, // 右下
 
   // 三角形③（下）
   0.0,
-  -0.3,
-  -0.15,
-  -0.6,
-  0.15,
-  -0.6,
+  height * 0 - 0.2, // 上頂点
+  -sideLength / 2,
+  height * -1 - 0.2, // 左下
+  sideLength / 2,
+  height * -1 - 0.2, // 右下
 ]);
 
 /**

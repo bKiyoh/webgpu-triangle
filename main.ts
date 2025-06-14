@@ -40,7 +40,7 @@ initialize()
       entries: [
         {
           binding: 0,
-          visibility: GPUShaderStage.FRAGMENT,
+          visibility: GPUShaderStage.VERTEX,
           buffer: {},
         },
       ],
