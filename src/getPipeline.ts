@@ -1,6 +1,10 @@
 import vertexWGSL from "./shader/vertex.wgsl?raw";
 import fragmentWGSL from "./shader/fragment.wgsl?raw";
-import { sharedVertexSize, sharedPositionOffset } from "./geometry";
+import {
+  sharedVertexSize,
+  sharedPositionOffset,
+  sharedColorOffset,
+} from "./geometry";
 
 type TGetPipelineArgs = {
   GPU_DEVICE: GPUDevice;
@@ -41,6 +45,11 @@ export const getPipeline = ({
               shaderLocation: 0, // vertex.wgsl vertexMain関数の @location(0) に対応
               offset: sharedPositionOffset,
               format: "float32x2", // 各頂点の座標データの容量に合わせたフォーマット。ここでは4byteが２つで一つの座標なので'float32x2'を指定。
+            },
+            {
+              shaderLocation: 1, // r, g, b, a
+              offset: sharedColorOffset, // 2つのfloat分スキップしてcolor
+              format: "float32x4",
             },
           ],
         },
