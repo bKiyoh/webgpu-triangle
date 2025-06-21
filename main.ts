@@ -103,7 +103,5 @@ initialize()
     loop();
   })
   .catch((error) => {
-    console.log(sharedVertexArray.byteLength); // 要素数（例: 18）
-    console.log(sharedIndexArray.byteLength);
     console.error(error);
   });
