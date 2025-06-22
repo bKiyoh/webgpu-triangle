@@ -29,5 +29,7 @@ export const colorUniformOffset = centerUniformOffset + 4 * triangleCount;
 export const uniformBufferSize =
   4 + 4 + 8 + 16 * triangleCount + 16 * triangleCount + 16 * triangleCount;
 
-/** ユニフォームバッファのデータ */
+/** ユニフォームバッファのデータ
+ * - Float32Arrayを使用して、WebGPUのユニフォームバッファに格納するデータを管理
+ */
 export const uniformValues = new Float32Array(uniformBufferSize / perByteSize);
