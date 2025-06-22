@@ -14,6 +14,7 @@
  * - rotations: 各三角形の回転角度（vec4 だが主に x 成分を使用）
  * - centers: 各三角形の中心座標
  * - colors: 各三角形の色情報（RGBA）
+  * - modelViewProjectionMatrix: モデル変換、ビュー変換、投影変換をまとめた行列
  */
 struct Uniforms {
   time: f32,
@@ -22,6 +23,7 @@ struct Uniforms {
   rotations: array<vec4<f32>, 3>,
   centers: array<vec4<f32>, 3>,
   colors: array<vec4<f32>, 3>,
+  modelViewProjectionMatrix: mat4x4<f32>,
 };
 
 /**
@@ -56,22 +58,40 @@ fn vertexMain(
 ) -> VertexOutput {
   let triangleIndex = vertexIndex / 3u;
 
-  let angle = uniforms.rotations[triangleIndex].x;
-  let center = uniforms.centers[triangleIndex].xy;
+  let angles = uniforms.rotations[triangleIndex].xyz;
+  let center = uniforms.centers[triangleIndex].xyz;
 
-  let translated = position - center;
+  var translated = vec3f(position, 0.0) - center;
 
-  let cosA = cos(angle);
-  let sinA = sin(angle);
-  let rotated = vec2f(
-    translated.x * cosA - translated.y * sinA,
-    translated.x * sinA + translated.y * cosA
+  // Z軸回転
+  let cz = cos(angles.z); let sz = sin(angles.z);
+  translated = vec3f(
+    translated.x * cz - translated.y * sz,
+    translated.x * sz + translated.y * cz,
+    translated.z
   );
 
-  let finalPosition = rotated + center;
+  // Y軸回転
+  let cy = cos(angles.y); let sy = sin(angles.y);
+  translated = vec3f(
+    translated.x * cy + translated.z * sy,
+    translated.y,
+    -translated.x * sy + translated.z * cy
+  );
+
+  // X軸回転
+  let cx = cos(angles.x); let sx = sin(angles.x);
+  translated = vec3f(
+    translated.x,
+    translated.y * cx - translated.z * sx,
+    translated.y * sx + translated.z * cx
+  );
+
+  let finalPosition = translated + center;
 
   var out: VertexOutput;
-  out.position = vec4f(finalPosition, 0.0, 1.0);
+  // モデル変換、ビュー変換、投影変換の全てが1度に適用される
+  out.position = uniforms.modelViewProjectionMatrix * vec4f(finalPosition, 1.0);
   out.color = color;
   return out;
 }

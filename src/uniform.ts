@@ -15,19 +15,28 @@ export const rotationUniformOffset = 4;
 export const centerUniformOffset = rotationUniformOffset + 4 * triangleCount;
 /** uniformValues 内の colors データのオフセット位置（新規追加） */
 export const colorUniformOffset = centerUniformOffset + 4 * triangleCount;
+/** MVP行列のオフセット位置（mat4x4 = 16個のfloat）← ★追加 */
+export const mvpMatrixOffset = colorUniformOffset + 4 * triangleCount;
 
 /**
  * ユニフォームバッファのサイズ（バイト単位）
  * - time: 4バイト
  * - _pad: 4バイト（アライメント調整用）
  * - screenSize: vec2f = 8バイト
- * - rotations: vec4f × 3 = 16バイト × 3 = 48バイト
+ * - rotations: vec4f × 3 = 48バイト
  * - centers: vec4f × 3 = 48バイト
- * - colors: vec4f × 3 = 48バイト ← ★追加部分
- * 合計 = 16 + 48 + 48 + 48 = 160バイト
+ * - colors: vec4f × 3 = 48バイト
+ * - MVP行列: mat4x4 = 64バイト ← ★追加
+ * 合計 = 4 + 4 + 8 + 48 + 48 + 48 + 64 = 224バイト
  */
 export const uniformBufferSize =
-  4 + 4 + 8 + 16 * triangleCount + 16 * triangleCount + 16 * triangleCount;
+  4 +
+  4 +
+  8 +
+  16 * triangleCount + // rotations
+  16 * triangleCount + // centers
+  16 * triangleCount + // colors
+  16 * 4; // mvp matrix
 
 /** ユニフォームバッファのデータ
  * - Float32Arrayを使用して、WebGPUのユニフォームバッファに格納するデータを管理
