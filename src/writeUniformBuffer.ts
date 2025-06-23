@@ -8,6 +8,7 @@ import {
   mvpMatrixOffset,
 } from "./uniform";
 import { Vec3, Mat4 } from "./lib/math";
+import type { WebGLOrbitCamera } from "./lib/camera";
 
 const startTime = Date.now();
 
@@ -15,12 +16,14 @@ type TArgs = {
   uniformBuffer: GPUBuffer;
   GPU_DEVICE: GPUDevice;
   GPU_CANVAS_CONTEXT: GPUCanvasContext;
+  camera: WebGLOrbitCamera;
 };
 
 export const writeUniformBuffer = ({
   uniformBuffer,
   GPU_DEVICE,
   GPU_CANVAS_CONTEXT,
+  camera,
 }: TArgs) => {
   /**
    * 現在の時間を取得し、uniformValuesにセットする
@@ -111,11 +114,11 @@ export const writeUniformBuffer = ({
    * ビュー座標変換行列(V)
    * カメラ（視点）の位置を考慮した変換を与える行列を生成する
    */
-  const eye = Vec3.create(0.0, 0.0, 3.0); // カメラの位置
-  const center = Vec3.create(0.0, 0.0, 0.0); // カメラの注視点
-  const upDirection = Vec3.create(0.0, 1.0, 0.0); // カメラの天面の向き
-  const v = Mat4.lookAt(eye, center, upDirection);
-
+  // const eye = Vec3.create(0.0, 0.0, 3.0); // カメラの位置
+  // const center = Vec3.create(0.0, 0.0, 0.0); // カメラの注視点
+  // const upDirection = Vec3.create(0.0, 1.0, 0.0); // カメラの天面の向き
+  // const v = Mat4.lookAt(eye, center, upDirection);
+  const v = camera.update(); // カメラの状態を更新してビュー行列を取得
   /**
    * プロジェクション座標変換行列(P)
    * 平面（スクリーン）に頂点を投影するための変換を与える行列を生成する

@@ -1,9 +1,11 @@
 import { writeUniformBuffer } from "./writeUniformBuffer";
 import { triangleCount } from "./uniform.ts";
+import type { WebGLOrbitCamera } from "./lib/camera";
 
 type TRenderArgs = {
   GPU_CANVAS_CONTEXT: GPUCanvasContext;
   GPU_DEVICE: GPUDevice;
+  camera: WebGLOrbitCamera;
   pipeline: GPURenderPipeline;
   verticesBuffer: GPUBuffer;
   indicesBuffer: GPUBuffer;
@@ -15,6 +17,7 @@ type TRenderArgs = {
 export const render = ({
   GPU_CANVAS_CONTEXT,
   GPU_DEVICE,
+  camera,
   pipeline,
   verticesBuffer,
   indicesBuffer,
@@ -24,7 +27,12 @@ export const render = ({
 }: TRenderArgs) => {
   /** Update uniform buffer */
   // GPU側にデータを送る処理を実行
-  writeUniformBuffer({ uniformBuffer, GPU_DEVICE, GPU_CANVAS_CONTEXT });
+  writeUniformBuffer({
+    uniformBuffer,
+    GPU_DEVICE,
+    GPU_CANVAS_CONTEXT,
+    camera,
+  });
 
   /** GPUに発行されるコマンドをエンコードするためのエンコーダーを作成 */
   // WebGPUをはじめとした低レベル３D APIでは、一般的にCommandBufferというGPUへの各種命令をパッキングするバッファが存在する

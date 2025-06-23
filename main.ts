@@ -112,6 +112,7 @@ initialize()
         uniformBuffer,
         uniformBindGroup,
         depthTexture,
+        camera: result.ORBIT_CAMERA,
       });
       requestAnimationFrame(loop);
     };

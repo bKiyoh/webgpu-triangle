@@ -1,3 +1,5 @@
+import { WebGLOrbitCamera } from "./lib/camera";
+
 export const initialize = async () => {
   // adapterは物理デバイス（物理的なGPU）
   const GPU_ADAPTER = await navigator.gpu.requestAdapter();
@@ -5,6 +7,9 @@ export const initialize = async () => {
   const GPU_DEVICE = await GPU_ADAPTER!.requestDevice();
   // contextの取得
   const canvas: HTMLCanvasElement | null = document.querySelector("#world");
+  if (!canvas) {
+    throw new Error("canvas 要素が見つかりませんでした");
+  }
   const GPU_CANVAS_CONTEXT = canvas?.getContext("webgpu");
 
   if (!GPU_ADAPTER) {
@@ -57,10 +62,23 @@ export const initialize = async () => {
   window.onresize = reportWindowSize;
   window.dispatchEvent(new Event("resize"));
 
+  /**
+   * カメラの設定
+   * WebGLOrbitCameraを使用して、カメラの初期位置や動作を設定します。
+   */
+  const cameraOption = {
+    distance: 3.0, // Z 軸上の初期位置までの距離
+    min: 1.0, // カメラが寄れる最小距離
+    max: 10.0, // カメラが離れられる最大距離
+    move: 2.0, // 右ボタンで平行移動する際の速度係数
+  };
+  const ORBIT_CAMERA = new WebGLOrbitCamera(canvas, cameraOption);
+
   return {
     GPU_ADAPTER,
     GPU_DEVICE,
     GPU_CANVAS_CONTEXT,
     CANVAS_FORMAT,
+    ORBIT_CAMERA,
   };
 };

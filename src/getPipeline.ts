@@ -79,8 +79,8 @@ export const getPipeline = ({
        * バックフェイスカリングとは、視点から見えない面を描画しないようにする機能
        * これにより、描画のパフォーマンスが向上し、不要な計算を避けることができる
        */
-      cullMode: "back", // ← バックフェイスカリングを有効にする
-      frontFace: "ccw", // ← どちらが表か（counter-clockwise ＝ 反時計回りが表）
+      // cullMode: "back", // ← バックフェイスカリングを有効にする
+      // frontFace: "ccw", // ← どちらが表か（counter-clockwise ＝ 反時計回りが表）
     },
     /**
      * 深度テストの設定
