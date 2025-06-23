@@ -86,6 +86,20 @@ initialize()
     });
 
     /**
+     * 深度テクスチャの作成
+     * レンダリングパスで深度テストを行うためのテクスチャ。
+     * 画面サイズに合わせて作成され、GPU_CANVAS_CONTEXT.getCurrentTexture() のサイズを使用。
+     */
+    const depthTexture = GPU_DEVICE.createTexture({
+      size: {
+        width: GPU_CANVAS_CONTEXT.getCurrentTexture().width,
+        height: GPU_CANVAS_CONTEXT.getCurrentTexture().height,
+      },
+      format: "depth24plus",
+      usage: GPUTextureUsage.RENDER_ATTACHMENT,
+    });
+
+    /**
      * 描画ループ
      */
     const loop = () => {
@@ -97,6 +111,7 @@ initialize()
         indicesBuffer: ibo,
         uniformBuffer,
         uniformBindGroup,
+        depthTexture,
       });
       requestAnimationFrame(loop);
     };

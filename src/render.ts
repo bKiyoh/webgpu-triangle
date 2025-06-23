@@ -9,6 +9,7 @@ type TRenderArgs = {
   indicesBuffer: GPUBuffer;
   uniformBuffer: GPUBuffer;
   uniformBindGroup: GPUBindGroup;
+  depthTexture: GPUTexture;
 };
 
 export const render = ({
@@ -19,6 +20,7 @@ export const render = ({
   indicesBuffer,
   uniformBuffer,
   uniformBindGroup,
+  depthTexture,
 }: TRenderArgs) => {
   /** Update uniform buffer */
   // GPU側にデータを送る処理を実行
@@ -41,6 +43,13 @@ export const render = ({
         storeOp: "store",
       },
     ],
+    // depthStencilAttachmentsは、深度テストを行うための設定
+    depthStencilAttachment: {
+      view: depthTexture.createView(),
+      depthClearValue: 1.0,
+      depthLoadOp: "clear",
+      depthStoreOp: "store",
+    },
   });
   // setPipeline関数で、前ページで作成したRenderPipelineを設定
   renderPassEncoder.setPipeline(pipeline);
