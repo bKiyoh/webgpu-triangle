@@ -52,46 +52,13 @@ var<uniform> uniforms: Uniforms;
  */
 @vertex
 fn vertexMain(
-  @location(0) position: vec2f,
+  @location(0) position: vec3f,
   @location(1) color: vec4f,
   @builtin(vertex_index) vertexIndex: u32
 ) -> VertexOutput {
-  let triangleIndex = vertexIndex / 3u;
-
-  let angles = uniforms.rotations[triangleIndex].xyz;
-  let center = uniforms.centers[triangleIndex].xyz;
-
-  var translated = vec3f(position, 0.0) - center;
-
-  // Z軸回転
-  let cz = cos(angles.z); let sz = sin(angles.z);
-  translated = vec3f(
-    translated.x * cz - translated.y * sz,
-    translated.x * sz + translated.y * cz,
-    translated.z
-  );
-
-  // Y軸回転
-  let cy = cos(angles.y); let sy = sin(angles.y);
-  translated = vec3f(
-    translated.x * cy + translated.z * sy,
-    translated.y,
-    -translated.x * sy + translated.z * cy
-  );
-
-  // X軸回転
-  let cx = cos(angles.x); let sx = sin(angles.x);
-  translated = vec3f(
-    translated.x,
-    translated.y * cx - translated.z * sx,
-    translated.y * sx + translated.z * cx
-  );
-
-  let finalPosition = translated + center;
-
   var out: VertexOutput;
   // モデル変換、ビュー変換、投影変換の全てが1度に適用される
-  out.position = uniforms.modelViewProjectionMatrix * vec4f(finalPosition, 1.0);
+  out.position = uniforms.modelViewProjectionMatrix * vec4f(position, 1.0);
   out.color = color;
   return out;
 }

@@ -2,7 +2,6 @@ import {
   timeUniformOffset,
   screenSizeUniformOffset,
   rotationUniformOffset,
-  centerUniformOffset,
   triangleCount,
   uniformValues,
   mvpMatrixOffset,
@@ -47,52 +46,6 @@ export const writeUniformBuffer = ({
     uniformValues.set([millis, 0, 0, 0], index);
   }
 
-  // 正三角形の辺の長さ
-  const sideLength = 0.3;
-  // 正三角形の高さを計算
-  const geometryHeight = (sideLength * Math.sqrt(3)) / 2;
-
-  /**
-   * 三角形の中心座標を計算し、uniformValuesにセットする
-   * 各三角形の中心は、上頂点と下頂点のy座標の平均値で計算される
-   */
-  const triangleCenters = [
-    // 三角形①
-    [
-      0,
-      (geometryHeight * 2 +
-        0.2 +
-        geometryHeight * 1 +
-        0.2 +
-        geometryHeight * 1 +
-        0.2) /
-        3,
-    ],
-    // 三角形②
-    [0, (geometryHeight * 1 + geometryHeight * 0 + geometryHeight * 0) / 3],
-    // 三角形③
-    [
-      0,
-      (-geometryHeight * 2 -
-        0.2 +
-        geometryHeight * 1 -
-        0.2 +
-        -geometryHeight * 1 -
-        0.2) /
-        3,
-    ],
-  ];
-
-  /**
-   * 三角形の中心座標を uniformValues にセットする
-   * 各三角形の中心座標は、uniformValuesの centerUniformOffset から始まる位置に格納される
-   */
-  for (let i = 0; i < triangleCount; i++) {
-    const [cx, cy] = triangleCenters[i];
-    const offset = centerUniformOffset + i * 4;
-    uniformValues.set([cx, cy, 0, 0], offset);
-  }
-
   /**
    * 3D空間の頂点を2Dスクリーンに投影するため、
    * モデル変換行列（M）、ビュー変換行列（V）、プロジェクション変換行列（P）を組み合わせた
@@ -107,7 +60,7 @@ export const writeUniformBuffer = ({
    * モデル座標変換行列(M)
    * 頂点を移動させるための行列を生成する
    */
-  const rotateAxis = Vec3.create(0.0, 1.0, 0.0); // Y 軸回転を掛ける
+  const rotateAxis = Vec3.create(0.5, 0.8, 0.5); // Y 軸回転を掛ける
   const m = Mat4.rotate(Mat4.identity(), millis, rotateAxis); // 時間の経過が回転量
 
   /**
@@ -123,7 +76,7 @@ export const writeUniformBuffer = ({
    * プロジェクション座標変換行列(P)
    * 平面（スクリーン）に頂点を投影するための変換を与える行列を生成する
    */
-  const fovy = 30; // 視野角
+  const fovy = 60; // 視野角
   const aspect = window.innerWidth / window.innerHeight; // アスペクト比
   const near = 0.1; // ニア・クリップ面までの距離
   const far = 10.0; // ファー・クリップ面までの距離

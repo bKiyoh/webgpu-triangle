@@ -67,9 +67,9 @@ export const initialize = async () => {
    * WebGLOrbitCameraを使用して、カメラの初期位置や動作を設定します。
    */
   const cameraOption = {
-    distance: 3.0, // Z 軸上の初期位置までの距離
-    min: 1.0, // カメラが寄れる最小距離
-    max: 10.0, // カメラが離れられる最大距離
+    distance: 5.0, // Z 軸上の初期位置までの距離
+    min: 0.1, // カメラが寄れる最小距離
+    max: 100.0, // カメラが離れられる最大距離
     move: 2.0, // 右ボタンで平行移動する際の速度係数
   };
   const ORBIT_CAMERA = new WebGLOrbitCamera(canvas, cameraOption);

@@ -1,5 +1,4 @@
 import { writeUniformBuffer } from "./writeUniformBuffer";
-import { triangleCount } from "./uniform.ts";
 import type { WebGLOrbitCamera } from "./lib/camera";
 import { sharedIndexArray } from "./geometry";
 

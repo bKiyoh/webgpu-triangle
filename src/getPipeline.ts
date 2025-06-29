@@ -44,7 +44,7 @@ export const getPipeline = ({
               // position
               shaderLocation: 0, // vertex.wgsl vertexMain関数の @location(0) に対応
               offset: sharedPositionOffset,
-              format: "float32x2", // 各頂点の座標データの容量に合わせたフォーマット。ここでは4byteが２つで一つの座標なので'float32x2'を指定。
+              format: "float32x3", // 各頂点の座標データの容量に合わせたフォーマット。ここでは4byteが２つで一つの座標なので'float32x2'を指定。
             },
             {
               shaderLocation: 1, // r, g, b, a
@@ -79,8 +79,8 @@ export const getPipeline = ({
        * バックフェイスカリングとは、視点から見えない面を描画しないようにする機能
        * これにより、描画のパフォーマンスが向上し、不要な計算を避けることができる
        */
-      // cullMode: "back", // ← バックフェイスカリングを有効にする
-      // frontFace: "ccw", // ← どちらが表か（counter-clockwise ＝ 反時計回りが表）
+      cullMode: "none", // ← バックフェイスカリングを有効にする
+      frontFace: "ccw", // ← どちらが表か（counter-clockwise ＝ 反時計回りが表）
     },
     /**
      * 深度テストの設定
