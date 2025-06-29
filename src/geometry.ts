@@ -1,3 +1,5 @@
+import { WebGLGeometry } from "./lib/geometry";
+
 /** 1つの値のバイトサイズ（float32 = 4） */
 const perByteSize = Float32Array.BYTES_PER_ELEMENT;
 
@@ -50,27 +52,72 @@ const TRIANGLE_COLORS = [
   RED, // 三角形③（下）
 ];
 
-/** 頂点配列の生成 */
-export const sharedVertexArray = new Float32Array(
-  TRIANGLE_POSITIONS.flatMap((position, i) => [
-    ...position,
-    ...TRIANGLE_COLORS[i],
-  ])
+const offsets = [1.0, 0.0, -1.0]; // Y位置オフセット（上中下）
+const color = [1.0, 0.0, 0.0, 1.0];
+
+const cones = offsets.map((yOffset) => {
+  const cone = WebGLGeometry.cube(5.0, color);
+  for (let i = 0; i < cone.position.length; i += 3) {
+    cone.position[i + 1] += yOffset; // Y方向に移動
+  }
+  return cone;
+});
+
+/** index結合：先頭からのオフセットを追加 */
+let offset = 0;
+export const sharedIndexArray = new Uint16Array(
+  cones.flatMap((cone) => {
+    const indexed = cone.index.map((i) => i + offset);
+    const maxIndex = Math.max(...cone.index);
+    offset += maxIndex + 1; // 実際の頂点参照の最大値に +1
+    return indexed;
+  })
 );
+
+// すべての頂点データ（position + color）をそのまままとめる
+export const sharedVertexArray = new Float32Array(
+  cones.flatMap((cone) => {
+    const vertexCount = cone.position.length / 3;
+    const packed = new Float32Array(vertexCount * 7);
+    for (let i = 0; i < vertexCount; i++) {
+      packed.set(
+        [
+          cone.position[i * 3],
+          cone.position[i * 3 + 1],
+          cone.position[i * 3 + 2],
+          cone.color[i * 4],
+          cone.color[i * 4 + 1],
+          cone.color[i * 4 + 2],
+          cone.color[i * 4 + 3],
+        ],
+        i * 7
+      );
+    }
+    return [...packed];
+  })
+);
+
+// /** 頂点配列の生成 */
+// export const sharedVertexArray = new Float32Array(
+//   TRIANGLE_POSITIONS.flatMap((position, i) => [
+//     ...position,
+//     ...TRIANGLE_COLORS[i],
+//   ])
+// );
 
 /**
  * インデックスデータ（6つ）
  * - 三角形①: 0,1,2
  * - 三角形②: 0,2,3
  */
-export const sharedIndexArray = new Uint16Array([
-  0,
-  1,
-  2, // 上
-  3,
-  4,
-  5, // 中央
-  6,
-  7,
-  8, // 下
-]);
+// export const sharedIndexArray = new Uint16Array([
+//   0,
+//   1,
+//   2, // 上
+//   3,
+//   4,
+//   5, // 中央
+//   6,
+//   7,
+//   8, // 下
+// ]);

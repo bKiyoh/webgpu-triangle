@@ -1,6 +1,7 @@
 import { writeUniformBuffer } from "./writeUniformBuffer";
 import { triangleCount } from "./uniform.ts";
 import type { WebGLOrbitCamera } from "./lib/camera";
+import { sharedIndexArray } from "./geometry";
 
 type TRenderArgs = {
   GPU_CANVAS_CONTEXT: GPUCanvasContext;
@@ -74,7 +75,7 @@ export const render = ({
   renderPassEncoder.setIndexBuffer(indicesBuffer, "uint16");
 
   // GPU に「合計 N 個の頂点インデックスを使って描画せよ」と命令している処理
-  renderPassEncoder.drawIndexed(triangleCount * 3);
+  renderPassEncoder.drawIndexed(sharedIndexArray.length);
 
   // レンダリングパスの終了を宣言
   renderPassEncoder.end();
