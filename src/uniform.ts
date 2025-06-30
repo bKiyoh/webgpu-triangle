@@ -27,16 +27,18 @@ export const mvpMatrixOffset = colorUniformOffset + 4 * triangleCount;
  * - centers: vec4f × 3 = 48バイト
  * - colors: vec4f × 3 = 48バイト
  * - MVP行列: mat4x4 = 64バイト ← ★追加
- * 合計 = 4 + 4 + 8 + 48 + 48 + 48 + 64 = 224バイト
+ * 合計: 4 + 4 + 8 + 48 + 48 + 48 + 192 = 352バイト (triangleCount=3 の場合)
+
  */
+/** ユニフォームバッファのサイズ（バイト単位） */
 export const uniformBufferSize =
-  4 +
-  4 +
-  8 +
+  4 + // time
+  4 + // _pad
+  8 + // screenSize
   16 * triangleCount + // rotations
   16 * triangleCount + // centers
   16 * triangleCount + // colors
-  16 * 4; // mvp matrix
+  16 * 4 * triangleCount; // mat4x4<f32> × triangleCount
 
 /** ユニフォームバッファのデータ
  * - Float32Arrayを使用して、WebGPUのユニフォームバッファに格納するデータを管理

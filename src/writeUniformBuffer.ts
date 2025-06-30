@@ -60,7 +60,7 @@ export const writeUniformBuffer = ({
    * モデル座標変換行列(M)
    * 頂点を移動させるための行列を生成する
    */
-  const rotateAxis = Vec3.create(0.5, 0.8, 0.5); // Y 軸回転を掛ける
+  const rotateAxis = Vec3.create(0, 0.5, 0); // Y 軸回転を掛ける
   const m = Mat4.rotate(Mat4.identity(), millis, rotateAxis); // 時間の経過が回転量
 
   /**

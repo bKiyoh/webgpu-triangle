@@ -56,8 +56,8 @@ export const initialize = async () => {
    */
   const scale = window.devicePixelRatio;
   const reportWindowSize = () => {
-    GPU_CANVAS_CONTEXT.canvas.width = Math.floor(window.innerHeight * scale);
-    GPU_CANVAS_CONTEXT.canvas.height = Math.floor(window.innerWidth * scale);
+    GPU_CANVAS_CONTEXT.canvas.width = Math.floor(window.innerWidth * scale);
+    GPU_CANVAS_CONTEXT.canvas.height = Math.floor(window.innerHeight * scale);
   };
   window.onresize = reportWindowSize;
   window.dispatchEvent(new Event("resize"));
