@@ -46,7 +46,7 @@ export const render = ({
       // fragment.wgsl　fragmentMain関数の戻り値の @location(0) に対応
       {
         view: GPU_CANVAS_CONTEXT.getCurrentTexture().createView(),
-        clearValue: { r: 0.0, g: 0.15, b: 0.25, a: 1.0 },
+        clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
         loadOp: "clear",
         storeOp: "store",
       },

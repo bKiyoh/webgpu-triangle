@@ -86,7 +86,9 @@ export const writeUniformBuffer = ({
   // 列優先の行列計算を行うため、順番に注意
   const vp = Mat4.multiply(p, v);
   const mvp = Mat4.multiply(vp, m);
+  const normalMatrix = Mat4.transpose(Mat4.inverse(m)); // 法線行列を計算
 
   uniformValues.set(mvp, mvpMatrixOffset);
+  uniformValues.set(normalMatrix, mvpMatrixOffset + 16); // 法線行列をMVP行列の後ろに配置
   GPU_DEVICE.queue.writeBuffer(uniformBuffer, 0, uniformValues);
 };

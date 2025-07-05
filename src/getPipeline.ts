@@ -4,6 +4,7 @@ import {
   sharedVertexSize,
   sharedPositionOffset,
   sharedColorOffset,
+  sharedNormalOffset,
 } from "./geometry";
 
 type TGetPipelineArgs = {
@@ -50,6 +51,11 @@ export const getPipeline = ({
               shaderLocation: 1, // r, g, b, a
               offset: sharedColorOffset, // 2つのfloat分スキップしてcolor
               format: "float32x4",
+            },
+            {
+              shaderLocation: 2, // 法線
+              offset: sharedNormalOffset, // 3つのfloat分スキップしてnormal
+              format: "float32x3", // 法線は3つのfloatで表現されるので'float32x3'を指定。
             },
           ],
         },

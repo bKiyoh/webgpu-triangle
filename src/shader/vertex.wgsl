@@ -24,6 +24,7 @@ struct Uniforms {
   centers: array<vec4<f32>, 3>,
   colors: array<vec4<f32>, 3>,
   modelViewProjectionMatrix: mat4x4<f32>,
+  normalMatrix: mat4x4<f32>, // 法線行列を追加
 };
 
 /**
@@ -34,6 +35,7 @@ struct Uniforms {
 struct VertexOutput {
   @builtin(position) position: vec4f,
   @location(0) color: vec4f,
+  @location(1) normal: vec3f,
 };
 
 /**
@@ -54,11 +56,21 @@ var<uniform> uniforms: Uniforms;
 fn vertexMain(
   @location(0) position: vec3f,
   @location(1) color: vec4f,
+  @location(2) normal: vec3f,
   @builtin(vertex_index) vertexIndex: u32
 ) -> VertexOutput {
+  let normalMatrix = uniforms.normalMatrix; // 法線行列を取得
+  let n: vec3f = (normalMatrix * vec4f(normal, 0.0)).xyz; // 法線を変換
   var out: VertexOutput;
   // モデル変換、ビュー変換、投影変換の全てが1度に適用される
   out.position = uniforms.modelViewProjectionMatrix * vec4f(position, 1.0);
-  out.color = color;
+  // ライトベクトルは定数で定義する
+  let light: vec3f = vec3f(1.0, 1.0, 1.0);
+  // 単位化した法線とライトベクトルの内積を計算
+  let d = dot(normalize(n), normalize(light));
+  // 内積の値は光の当たり具合を示す（1.0＝直角方向に完全に当たる、0.0＝直交、負値＝裏面）
+  // rgbと内積の結果を掛け合わせて最終的な色を計算
+  out.color = vec4(color.rgb * d, color.a);
+  out.normal = n;
   return out;
 }

@@ -12,9 +12,18 @@ struct Uniforms {
 @group(0) @binding(0)
 var<uniform> uniforms: Uniforms;
 
+struct VertexOutput {
+  @builtin(position) position: vec4f,
+  @location(0) color: vec4f,
+  @location(1) normal: vec3f,
+};
+
 @fragment
-fn fragmentMain(@location(0) color: vec4f) -> @location(0) vec4f {
-    let blink = abs(sin(uniforms.time * 0.5)); // 0.0 から 1.0 の間で変化するブリンク効果
-    let rgb = color.rgb * (1.0 + 0.6  * blink); // 最低1.0
-    return vec4f(rgb, color.a);
+fn fragmentMain(in: VertexOutput) -> @location(0) vec4f {
+  let lightDirection: vec3f = normalize(vec3f(1.0, 1.0, 1.0));
+  let lightColor: vec3f = vec3f(1.0, 1.0, 1.0);
+
+  let d = dot(normalize(in.normal), lightDirection);
+  
+  return vec4f(in.color.rgb * d * lightColor, in.color.a);
 }
